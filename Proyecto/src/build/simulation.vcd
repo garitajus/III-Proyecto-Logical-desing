@@ -1,0 +1,1163 @@
+$date
+	Wed May 14 20:41:03 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb_top $end
+$var wire 7 ! seg [6:0] $end
+$var wire 4 " columnas [3:0] $end
+$var wire 4 # an [3:0] $end
+$var reg 1 $ clk $end
+$var reg 4 % filas [3:0] $end
+$var reg 1 & rst $end
+$scope module uut $end
+$var wire 1 $ clk $end
+$var wire 4 ' filas [3:0] $end
+$var wire 1 & rst $end
+$var wire 16 ( sum_result [15:0] $end
+$var wire 7 ) seg [6:0] $end
+$var wire 1 * key_pressed $end
+$var wire 4 + key [3:0] $end
+$var wire 4 , columnas [3:0] $end
+$var wire 4 - an [3:0] $end
+$var reg 4 . A0 [3:0] $end
+$var reg 4 / A1 [3:0] $end
+$var reg 4 0 A2 [3:0] $end
+$var reg 4 1 B0 [3:0] $end
+$var reg 4 2 B1 [3:0] $end
+$var reg 4 3 B2 [3:0] $end
+$var reg 12 4 bcd_A [11:0] $end
+$var reg 12 5 bcd_B [11:0] $end
+$var reg 2 6 current_state [1:0] $end
+$var reg 16 7 display_data [15:0] $end
+$var reg 1 8 key_pressed_prev $end
+$var reg 1 9 key_strobe $end
+$var reg 2 : next_state [1:0] $end
+$scope module display $end
+$var wire 1 $ clk $end
+$var wire 16 ; data [15:0] $end
+$var wire 7 < seg [6:0] $end
+$var reg 4 = anodes [3:0] $end
+$var reg 4 > current_digit [3:0] $end
+$var reg 2 ? digit_select [1:0] $end
+$var reg 16 @ refresh_counter [15:0] $end
+$scope module converter $end
+$var wire 4 A hex [3:0] $end
+$var reg 7 B seg [6:0] $end
+$upscope $end
+$upscope $end
+$scope module scanner $end
+$var wire 1 $ clk $end
+$var wire 4 C row [3:0] $end
+$var wire 4 D row_pressed [3:0] $end
+$var wire 4 E row_debounced [3:0] $end
+$var parameter 2 F DETECT $end
+$var parameter 2 G SCAN $end
+$var parameter 32 H SCAN_DELAY $end
+$var parameter 2 I WAIT $end
+$var reg 4 J col [3:0] $end
+$var reg 2 K col_select [1:0] $end
+$var reg 16 L counter [15:0] $end
+$var reg 4 M key [3:0] $end
+$var reg 1 * key_pressed $end
+$var reg 4 N last_row [3:0] $end
+$var reg 2 O state [1:0] $end
+$scope module db_inst0 $end
+$var wire 1 $ clk $end
+$var wire 1 P estable $end
+$var wire 1 Q key $end
+$var wire 1 R key_pressed $end
+$var wire 1 S rst $end
+$var reg 17 T count [16:0] $end
+$var reg 1 U ff_1 $end
+$var reg 1 V ff_2 $end
+$var reg 1 R ff_3 $end
+$var reg 1 W ff_4 $end
+$upscope $end
+$scope module db_inst1 $end
+$var wire 1 $ clk $end
+$var wire 1 X estable $end
+$var wire 1 Y key $end
+$var wire 1 Z key_pressed $end
+$var wire 1 [ rst $end
+$var reg 17 \ count [16:0] $end
+$var reg 1 ] ff_1 $end
+$var reg 1 ^ ff_2 $end
+$var reg 1 Z ff_3 $end
+$var reg 1 _ ff_4 $end
+$upscope $end
+$scope module db_inst2 $end
+$var wire 1 $ clk $end
+$var wire 1 ` estable $end
+$var wire 1 a key $end
+$var wire 1 b key_pressed $end
+$var wire 1 c rst $end
+$var reg 17 d count [16:0] $end
+$var reg 1 e ff_1 $end
+$var reg 1 f ff_2 $end
+$var reg 1 b ff_3 $end
+$var reg 1 g ff_4 $end
+$upscope $end
+$scope module db_inst3 $end
+$var wire 1 $ clk $end
+$var wire 1 h estable $end
+$var wire 1 i key $end
+$var wire 1 j key_pressed $end
+$var wire 1 k rst $end
+$var reg 17 l count [16:0] $end
+$var reg 1 m ff_1 $end
+$var reg 1 n ff_2 $end
+$var reg 1 j ff_3 $end
+$var reg 1 o ff_4 $end
+$upscope $end
+$upscope $end
+$scope module sumador $end
+$var wire 12 p bcd_1 [11:0] $end
+$var wire 12 q bcd_2 [11:0] $end
+$var wire 16 r resultado_bcd [15:0] $end
+$var reg 1 s acarreo_centenas $end
+$var reg 1 t acarreo_decenas $end
+$var reg 1 u acarreo_unidades $end
+$var reg 4 v centenas_1 [3:0] $end
+$var reg 4 w centenas_2 [3:0] $end
+$var reg 4 x centenas_final [3:0] $end
+$var reg 4 y decenas_1 [3:0] $end
+$var reg 4 z decenas_2 [3:0] $end
+$var reg 4 { decenas_final [3:0] $end
+$var reg 5 | suma_centenas [4:0] $end
+$var reg 5 } suma_decenas [4:0] $end
+$var reg 5 ~ suma_unidades [4:0] $end
+$var reg 4 !" unidades_1 [3:0] $end
+$var reg 4 "" unidades_2 [3:0] $end
+$var reg 4 #" unidades_final [3:0] $end
+$upscope $end
+$upscope $end
+$scope task ingresar_numero $end
+$var reg 4 $" numero [3:0] $end
+$upscope $end
+$scope task presionar_tecla $end
+$var reg 4 %" tecla [3:0] $end
+$upscope $end
+$scope task test_sequence $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1 I
+b10101000110 H
+b0 G
+b10 F
+$end
+#0
+$dumpvars
+bx %"
+bx $"
+bx #"
+bx ""
+bx !"
+bx ~
+bx }
+bx |
+bx {
+bx z
+bx y
+bx x
+bx w
+bx v
+xu
+xt
+xs
+b0xxxxxxxxxxxxx r
+bx q
+bx p
+xo
+xn
+xm
+bx l
+1k
+xj
+0i
+xh
+xg
+xf
+xe
+bx d
+1c
+xb
+0a
+x`
+x_
+x^
+x]
+bx \
+1[
+xZ
+0Y
+xX
+xW
+xV
+xU
+bx T
+1S
+xR
+0Q
+xP
+b0 O
+bx N
+b0 M
+b0 L
+b0 K
+b111 J
+bx E
+bx D
+b1111 C
+bx B
+bx A
+b0 @
+b0 ?
+bx >
+bx =
+bx <
+b0 ;
+b0 :
+09
+08
+b0 7
+b0 6
+bx 5
+bx 4
+b0 3
+b0 2
+b0 1
+b0 0
+b0 /
+b0 .
+bx -
+b111 ,
+b0 +
+0*
+bx )
+b0xxxxxxxxxxxxx (
+b1111 '
+0&
+b1111 %
+0$
+bx #
+b111 "
+bx !
+$end
+#18520
+0P
+0X
+0`
+0h
+b1111 E
+b1 O
+b1 K
+b1 @
+0U
+0R
+b0 T
+0]
+0Z
+b0 \
+0e
+0b
+b0 d
+0m
+b0 D
+0j
+b0 l
+1$
+#37040
+0$
+#55560
+b10 @
+b1 L
+0V
+0^
+0f
+0n
+1$
+#74080
+0$
+#92600
+b10 L
+b11 @
+0W
+0_
+0g
+0o
+1$
+#100000
+1&
+#111120
+0$
+#129640
+b100 @
+b11 L
+1$
+#148160
+0$
+#166680
+b100 L
+b101 @
+1$
+#185200
+0$
+#200000
+1i
+b111 %
+b111 '
+b111 C
+b11 $"
+#203720
+b110 @
+b101 L
+1m
+1$
+#222240
+0$
+#240760
+b110 L
+b111 @
+1n
+1$
+#259280
+0$
+#277800
+1h
+b1000 @
+b111 L
+1o
+1$
+#296320
+0$
+#300000
+0i
+b1111 %
+b1111 '
+b1111 C
+#314840
+0h
+b1000 L
+b1001 @
+0m
+b1 l
+1$
+#333360
+0$
+#351880
+b1010 @
+b1001 L
+b0 l
+0n
+1$
+#370400
+0$
+#388920
+b1010 L
+b1011 @
+0o
+1$
+#400000
+1a
+b1011 %
+b1011 '
+b1011 C
+b10 $"
+#407440
+0$
+#425960
+b1100 @
+b1011 L
+1e
+1$
+#444480
+0$
+#463000
+b1100 L
+b1101 @
+1f
+1$
+#481520
+0$
+#500000
+0a
+b1111 %
+b1111 '
+b1111 C
+#500040
+b1110 @
+b1101 L
+1g
+0e
+1$
+#518560
+0$
+#537080
+b1110 L
+b1111 @
+0f
+1$
+#555600
+0$
+#574120
+b10000 @
+b1111 L
+0g
+1$
+#592640
+0$
+#600000
+1Y
+b1101 %
+b1101 '
+b1101 C
+b1 $"
+#611160
+b10000 L
+b10001 @
+1]
+1$
+#629680
+0$
+#648200
+b10010 @
+b10001 L
+1^
+1$
+#666720
+0$
+#685240
+1X
+b10010 L
+b10011 @
+1_
+1$
+#700000
+0Y
+b1111 %
+b1111 '
+b1111 C
+#703760
+0$
+#722280
+0X
+b10100 @
+b10011 L
+b1 \
+0]
+1$
+#740800
+0$
+#759320
+b10100 L
+b10101 @
+0^
+b0 \
+1$
+#777840
+0$
+#796360
+b10110 @
+b10101 L
+0_
+1$
+#800000
+b1111 %"
+#814880
+0$
+#833400
+b10110 L
+b10111 @
+1$
+#851920
+0$
+#870440
+b11000 @
+b10111 L
+1$
+#888960
+0$
+#907480
+b11000 L
+b11001 @
+1$
+#926000
+0$
+#944520
+b11010 @
+b11001 L
+1$
+#963040
+0$
+#981560
+b11010 L
+b11011 @
+1$
+#1000000
+b110 $"
+#1000080
+0$
+#1018600
+b11100 @
+b11011 L
+1$
+#1037120
+0$
+#1055640
+b11100 L
+b11101 @
+1$
+#1074160
+0$
+#1092680
+b11110 @
+b11101 L
+1$
+#1111200
+0$
+#1129720
+b11110 L
+b11111 @
+1$
+#1148240
+0$
+#1166760
+b100000 @
+b11111 L
+1$
+#1185280
+0$
+#1200000
+b101 $"
+#1203800
+b100000 L
+b100001 @
+1$
+#1222320
+0$
+#1240840
+b100010 @
+b100001 L
+1$
+#1259360
+0$
+#1277880
+b100010 L
+b100011 @
+1$
+#1296400
+0$
+#1314920
+b100100 @
+b100011 L
+1$
+#1333440
+0$
+#1351960
+b100100 L
+b100101 @
+1$
+#1370480
+0$
+#1389000
+b100110 @
+b100101 L
+1$
+#1400000
+b100 $"
+#1407520
+0$
+#1426040
+b100110 L
+b100111 @
+1$
+#1444560
+0$
+#1463080
+b101000 @
+b100111 L
+1$
+#1481600
+0$
+#1500120
+b101000 L
+b101001 @
+1$
+#1518640
+0$
+#1537160
+b101010 @
+b101001 L
+1$
+#1555680
+0$
+#1574200
+b101010 L
+b101011 @
+1$
+#1592720
+0$
+#1611240
+b101100 @
+b101011 L
+1$
+#1629760
+0$
+#1648280
+b101100 L
+b101101 @
+1$
+#1666800
+0$
+#1685320
+b101110 @
+b101101 L
+1$
+#1703840
+0$
+#1722360
+b101110 L
+b101111 @
+1$
+#1740880
+0$
+#1759400
+b110000 @
+b101111 L
+1$
+#1777920
+0$
+#1796440
+b110000 L
+b110001 @
+1$
+#1800000
+b1110 %"
+#1814960
+0$
+#1833480
+b110010 @
+b110001 L
+1$
+#1852000
+0$
+#1870520
+b110010 L
+b110011 @
+1$
+#1889040
+0$
+#1907560
+b110100 @
+b110011 L
+1$
+#1926080
+0$
+#1944600
+b110100 L
+b110101 @
+1$
+#1963120
+0$
+#1981640
+b110110 @
+b110101 L
+1$
+#2000000
+b1001 $"
+#2000160
+0$
+#2018680
+b110110 L
+b110111 @
+1$
+#2037200
+0$
+#2055720
+b111000 @
+b110111 L
+1$
+#2074240
+0$
+#2092760
+b111000 L
+b111001 @
+1$
+#2111280
+0$
+#2129800
+b111010 @
+b111001 L
+1$
+#2148320
+0$
+#2166840
+b111010 L
+b111011 @
+1$
+#2185360
+0$
+#2200000
+b1000 $"
+#2203880
+b111100 @
+b111011 L
+1$
+#2222400
+0$
+#2240920
+b111100 L
+b111101 @
+1$
+#2259440
+0$
+#2277960
+b111110 @
+b111101 L
+1$
+#2296480
+0$
+#2315000
+b111110 L
+b111111 @
+1$
+#2333520
+0$
+#2352040
+b1000000 @
+b111111 L
+1$
+#2370560
+0$
+#2389080
+b1000000 L
+b1000001 @
+1$
+#2400000
+b111 $"
+#2407600
+0$
+#2426120
+b1000010 @
+b1000001 L
+1$
+#2444640
+0$
+#2463160
+b1000010 L
+b1000011 @
+1$
+#2481680
+0$
+#2500200
+b1000100 @
+b1000011 L
+1$
+#2518720
+0$
+#2537240
+b1000100 L
+b1000101 @
+1$
+#2555760
+0$
+#2574280
+b1000110 @
+b1000101 L
+1$
+#2592800
+0$
+#2600000
+b1111 %"
+#2611320
+b1000110 L
+b1000111 @
+1$
+#2629840
+0$
+#2648360
+b1001000 @
+b1000111 L
+1$
+#2666880
+0$
+#2685400
+b1001000 L
+b1001001 @
+1$
+#2703920
+0$
+#2722440
+b1001010 @
+b1001001 L
+1$
+#2740960
+0$
+#2759480
+b1001010 L
+b1001011 @
+1$
+#2778000
+0$
+#2796520
+b1001100 @
+b1001011 L
+1$
+#2800000
+1i
+b111 %
+b111 '
+b111 C
+b11 $"
+#2815040
+0$
+#2833560
+b1001100 L
+b1001101 @
+1m
+1$
+#2852080
+0$
+#2870600
+b1001110 @
+b1001101 L
+1n
+1$
+#2889120
+0$
+#2900000
+0i
+b1111 %
+b1111 '
+b1111 C
+#2907640
+b1001110 L
+b1001111 @
+1o
+0m
+1$
+#2926160
+0$
+#2944680
+b1010000 @
+b1001111 L
+0n
+1$
+#2963200
+0$
+#2981720
+b1010000 L
+b1010001 @
+0o
+1$
+#3000000
+1a
+b1011 %
+b1011 '
+b1011 C
+b10 $"
+#3000240
+0$
+#3018760
+b1010010 @
+b1010001 L
+1e
+1$
+#3037280
+0$
+#3055800
+b1010010 L
+b1010011 @
+1f
+1$
+#3074320
+0$
+#3092840
+1`
+b1010100 @
+b1010011 L
+1g
+1$
+#3100000
+0a
+b1111 %
+b1111 '
+b1111 C
+#3111360
+0$
+#3129880
+0`
+b1010100 L
+b1010101 @
+0e
+b1 d
+1$
+#3148400
+0$
+#3166920
+b1010110 @
+b1010101 L
+b0 d
+0f
+1$
+#3185440
+0$
+#3200000
+1Y
+b1101 %
+b1101 '
+b1101 C
+b1 $"
+#3203960
+b1010110 L
+b1010111 @
+1]
+0g
+1$
+#3222480
+0$
+#3241000
+b1011000 @
+b1010111 L
+1^
+1$
+#3259520
+0$
+#3278040
+1X
+b1011000 L
+b1011001 @
+1_
+1$
+#3296560
+0$
+#3300000
+0Y
+b1111 %
+b1111 '
+b1111 C
+#3315080
+0X
+b1011010 @
+b1011001 L
+b1 \
+0]
+1$
+#3333600
+0$
+#3352120
+b1011010 L
+b1011011 @
+0^
+b0 \
+1$
+#3370640
+0$
+#3389160
+b1011100 @
+b1011011 L
+0_
+1$
+#3407680
+0$
+#3426200
+b1011100 L
+b1011101 @
+1$
+#3444720
+0$
+#3463240
+b1011110 @
+b1011101 L
+1$
+#3481760
+0$
+#3500280
+b1011110 L
+b1011111 @
+1$
+#3518800
+0$
+#3537320
+b1100000 @
+b1011111 L
+1$
+#3555840
+0$
+#3574360
+b1100000 L
+b1100001 @
+1$
+#3592880
+0$
+#3611400
+b1100010 @
+b1100001 L
+1$
+#3629920
+0$
+#3648440
+b1100010 L
+b1100011 @
+1$
+#3666960
+0$
+#3685480
+b1100100 @
+b1100011 L
+1$
+#3704000
+0$
+#3722520
+b1100100 L
+b1100101 @
+1$
+#3741040
+0$
+#3759560
+b1100110 @
+b1100101 L
+1$
+#3778080
+0$
+#3796600
+b1100110 L
+b1100111 @
+1$
+#3815120
+0$
+#3833640
+b1101000 @
+b1100111 L
+1$
+#3852160
+0$
+#3870680
+b1101000 L
+b1101001 @
+1$
+#3889200
+0$
+#3907720
+b1101010 @
+b1101001 L
+1$
+#3926240
+0$
+#3944760
+b1101010 L
+b1101011 @
+1$
+#3963280
+0$
+#3981800
+b1101100 @
+b1101011 L
+1$
+#4000320
+0$
+#4018840
+b1101100 L
+b1101101 @
+1$
+#4037360
+0$
+#4055880
+b1101110 @
+b1101101 L
+1$
+#4074400
+0$
+#4092920
+b1101110 L
+b1101111 @
+1$
+#4111440
+0$
+#4129960
+b1110000 @
+b1101111 L
+1$
+#4148480
+0$
+#4167000
+b1110000 L
+b1110001 @
+1$
+#4185520
+0$
+#4204040
+b1110010 @
+b1110001 L
+1$
+#4222560
+0$
+#4241080
+b1110010 L
+b1110011 @
+1$
+#4259600
+0$
+#4278120
+b1110100 @
+b1110011 L
+1$
+#4296640
+0$
+#4315160
+b1110100 L
+b1110101 @
+1$
+#4333680
+0$
+#4352200
+b1110110 @
+b1110101 L
+1$
+#4370720
+0$
+#4389240
+b1110110 L
+b1110111 @
+1$
+#4407760
+0$
+#4426280
+b1111000 @
+b1110111 L
+1$
+#4444800
+0$
+#4463320
+b1111000 L
+b1111001 @
+1$
+#4481840
+0$
+#4500360
+b1111010 @
+b1111001 L
+1$
+#4518880
+0$
+#4537400
+b1111010 L
+b1111011 @
+1$
+#4555920
+0$
+#4574440
+b1111100 @
+b1111011 L
+1$
+#4592960
+0$
+#4600000
