@@ -452,21 +452,21 @@ Módulo de los 7 segementos. [Ver pdf del Hex to 7seg](assets/hex_to_7seg.pdf)
 
 Módulo encargado para pasar el número de BCD a binario. [Ver pdf del BCD to_bin](assets/bcd_to_bin.pdf)
 
-![BCD sumador](assets/bcd_to_bin.JPEG)
+![BCD sumador](assets/bcd_to_bin.jpeg)
 
 Módulo encargado para pasar el número de binario a BCD. [Ver pdf del BCD to_bin](assets/bin_to_bcd.pdf)
 
-![BCD sumador](assets/bin_to_bcd.JPEG)
+![BCD sumador](assets/bin_to_bcd.jpeg)
 
 Módulo encargado de realizar la multiplicación. [Ver pdf del BCD to_bin](assets/booth_multiplier.pdf)
 
-![BCD sumador](mult.JPEG)
+![BCD sumador](mult.jpeg)
 
 Módulo Top. [Ver pdf del Top](assets/top.pdf)
 
 Este módulo al ser tan grande no se pudo redimensionar
 
-![Módulo top](assets/top.JPEG)
+![Módulo top](assets/top.jpeg)
 
 ## 5. Diagramas de estado de las FSM diseñadas, según descritos en la sección anterior.
 
