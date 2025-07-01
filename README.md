@@ -460,7 +460,7 @@ Módulo encargado para pasar el número de binario a BCD. [Ver pdf del BCD to_bi
 
 Módulo encargado de realizar la multiplicación. [Ver pdf del BCD to_bin](assets/booth_multiplier.pdf)
 
-![BCD sumador](mult.jpeg)
+![BCD sumador](assets/mult.jpeg)
 
 Módulo Top. [Ver pdf del Top](assets/top.pdf)
 
