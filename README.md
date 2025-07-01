@@ -521,56 +521,60 @@ El módulo top implementa un sistema de captura y suma de dos números decimales
 ## 7. Análisis de consumo de recursos en la FPGA (LUTs, FFs, etc.) y del consumo de potencia que reporta las herramientas.
 
 ```verilog
-=================Top Module=================
-    Number of wires:                799
-   Number of wire bits:           1571
-   Number of public wires:         799
-   Number of public wire bits:    1571
+=== top ===
+
+   Number of wires:                490
+   Number of wire bits:           2049
+   Number of public wires:         490
+   Number of public wire bits:    2049
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:               1073
-     ALU                           136
-     DFF                            19
-     DFFC                            4
-     DFFCE                          24
-     DFFE                           19
-     DFFP                            1
-     DFFR                           89
-     DFFRE                          16
-     DFFSE                           3
+   Number of cells:               1059
+     ALU                           354
+     DFF                             8
+     DFFC                            8
+     DFFCE                          35
+     DFFE                           18
+     DFFP                            2
+     DFFR                           17
+     DFFRE                         169
+     DFFS                            4
+     DFFSE                           4
      GND                             1
      IBUF                            6
-     LUT1                          243
-     LUT2                           61
-     LUT3                           43
-     LUT4                          117
-     MUX2_LUT5                     165
-     MUX2_LUT6                      66
-     MUX2_LUT7                      30
-     MUX2_LUT8                      14
+     LUT1                          105
+     LUT2                           58
+     LUT3                           53
+     LUT4                          119
+     MUX2_LUT5                      53
+     MUX2_LUT6                      20
+     MUX2_LUT7                       9
      OBUF                           15
      VCC                             1
 ```
 
-Esta implementación contiene 799 señales (1571 bits) y 1073 celdas lógicas, destacando 136 ALUs para operaciones aritméticas, 175 flip-flops (de varios tipos como DFF, DFFR y DFFE) para almacenamiento, y 464 LUTs (desde LUT1 hasta LUT4) para lógica combinacional, con predominio de LUT1 (243 unidades), lo que sugiere muchas funciones lógicas simples. Además, incluye 275 multiplexores basados en LUTs (MUX2_LUT5 a MUX2_LUT8), 6 buffers de entrada (IBUF), 15 de salida (OBUF), y señales de alimentación (GND y VCC). La ausencia de memorias (RAM/ROM) indica que el almacenamiento se gestiona mediante registros (flip-flops), mostrando un perfil típico de un módulo de procesamiento digital con lógica combinacional significativa y control moderado mediante registros.
+Esta implementación corresponde a una calculadora digital con soporte para multiplicación con signo mediante el algoritmo de Booth, capaz de operar sobre operandos ingresados desde un teclado matricial. El diseño sintetiza 490 señales públicas, sumando 2049 bits, y un total de 1059 celdas lógicas.
+Destacan 354 unidades ALU, reflejando la actividad aritmética que incluye no solo la multiplicación secuencial tipo Booth, sino también la conversión de datos BCD↔binario y el cálculo de valor absoluto. La gestión de control y almacenamiento temporal se realiza mediante 269 flip-flops de distintos tipos (DFF, DFFR, DFFRE, DFFCE, etc.), necesarios para implementar la máquina de estados finitos (FSM), la secuencia de entrada de operandos y el control del multiplicador.
+En cuanto a la lógica combinacional, se utilizan 335 LUTs de 1 a 4 entradas, donde predominan las LUT4 (119) y LUT1 (105), lo cual sugiere la presencia de funciones condicionales y decodificación de estados simples. Se emplean 82 multiplexores construidos con LUTs (como MUX2_LUT5 hasta MUX2_LUT7), esenciales para controlar el flujo de datos entre operandos, signo, y resultado final.
+El diseño también integra 6 buffers de entrada (IBUF), 15 buffers de salida (OBUF) y las correspondientes señales de alimentación (GND y VCC). No se utilizan memorias RAM o ROM, lo cual indica que todo el almacenamiento se gestiona con registros distribuidos.
 
 Realizando una medición directamente en la FPGA se determinó que la corriente que entrega es de aproximadamente 16.08mA, realizando el cálculo de potencia se determinó que la potencia consumida es de alrededor de 53.064mW 
 
 ## 8. Reporte de velocidades máximas de reloj posibles en el diseño.
 ```verilog
 Info: Annotating ports with timing budgets for target frequency 27.00 MHz
-Info: Checksum: 0xf2c27e5d
+Info: Checksum: 0xd5798977
 
 Info: Device utilisation:
 Info: 	                 VCC:     1/    1   100%
-Info: 	               SLICE:   754/ 8640     8%
+Info: 	               SLICE:   958/ 8640    11%
 Info: 	                 IOB:    21/  274     7%
 Info: 	                ODDR:     0/  274     0%
-Info: 	           MUX2_LUT5:   165/ 4320     3%
-Info: 	           MUX2_LUT6:    66/ 2160     3%
-Info: 	           MUX2_LUT7:    30/ 1080     2%
-Info: 	           MUX2_LUT8:    14/ 1056     1%
+Info: 	           MUX2_LUT5:    53/ 4320     1%
+Info: 	           MUX2_LUT6:    20/ 2160     0%
+Info: 	           MUX2_LUT7:     9/ 1080     0%
+Info: 	           MUX2_LUT8:     0/ 1056     0%
 Info: 	                 GND:     1/    1   100%
 Info: 	                RAMW:     0/  270     0%
 Info: 	                 GSR:     1/    1   100%
