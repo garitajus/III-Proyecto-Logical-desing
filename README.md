@@ -584,24 +584,12 @@ Info: 	                rPLL:     0/    2     0%
 
 ## 9. Análisis de principales problemas hallados durante el trabajo y de las soluciones aplicadas.
 Siguiente se enumeran los diversos problemas que se tuvieron a lo largo de la construcción de este proyecto y de igual forma cómo se solventaron.
-#### 1.	Problema principal, el anti rebote:
-Se tenía un error en el filtro de las señales ingresadas desde el teclado y enviadas al escáner, estás deben pasar inicialmente a través del modulo que trabaja el anti rebote, inicialmente se encontraba en un estado que sólo seleccionaba el dato escogido de forma física y lo ingresaba, pero el error inicial es que no lo seleccionaba una sola vez, sino lo hacía hasta completar el espacio máximo designado para 4 dígitos.
-La solución más cercana fue revisar en la web distintos repositorios libres que permitieran entender la lógica detrás, para implementarla en el propio diseño, además de aprovechar la constante ayuda del tutor del curso se logró corregir dicho problema en un gran parte, aunque aún se presentan mínimos problemas con el tiempo y la sensibilidad de las teclas. 
-El módulo del escáner y el anti rebote es funcional a un 90% y se encuentra en constante trabajo para lograr a perfeccionarlo.
-
-#### 2.	Guardar los dígitos ingresados:
-Se obtuvo un contra tiempo con la memoria para guardar los dos números decimales de 3 dígitos positivos. Por ende para resolverlo se consultó con el profesor y el tutor posibles formas de hacerlo, dónde por recomendación y búsqueda se implemento un FIFO (First In, First Out) que consiste en guardar el dígito y sí se ingresa uno nuevo lo desplaza a la izquierda y lo guarda en la posición correspondiente, ejemplo de esto sería:
-```
-Se ingresa un número ‘a’ 
-a <- unidades
-Ahora un número ‘b’ 
-a <- decenas, b <- unidades
-Por último un número ‘c’
-a <- centenas, b <- decenas, c<-unidades
-```
-
-#### 3.	FSM para mostrar dígitos ingresados y resultado de la suma: 
-Como se deben mostrar los números al ser ingresados en los dispositivos 7 segmentos, además de desplegar el resultado de la suma, se necesitaba alguna forma de hacerlo, aunque se implementaba lógica en un módulo no era funcional. Dicho problema se solucionó implementando una máquina de estado finita que coordinara con el FIFO anterior y el multiplexor para los 7 segmentos el mostrar lo dígitos ingresados y el resultado al sumarlos. Para eso se crearon los 3 estados que muestra el primer número ingresado desde el teclado, se presiona la tecla # para aceptar el siguiente número nuevamente y presionar una vez más el # que muestre la suma.
+#### 1.  Anti rebote, corrección y funcionalidad.
+Xxx 
+#### 2.  FSM para la multiplicación. 
+Xxx 
+#### 3.  Módulo para pasar un número de binario a formato BCD.
+Xxx
 
 ## 10. Referencias
 [0] Behzad R. *Fundamentals of Microelectronics*. Wiley, 2da edición, 2013.
