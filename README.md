@@ -450,15 +450,15 @@ Módulo de los 7 segementos. [Ver pdf del Hex to 7seg](assets/hex_to_7seg.pdf)
 
 ![Hex to seg](assets/hex_to_seg.png)
 
-Módulo encargado para pasar el número de BCD a binario. [Ver pdf del BCD to_bin](assets/bcd_to_bin.pdf)
+Módulo encargado para pasar el número de BCD a binario. [Ver pdf del BCD_to_bin](assets/bcd_to_bin.pdf)
 
 ![BCD sumador](assets/bcd_to_bin.jpeg)
 
-Módulo encargado para pasar el número de binario a BCD. [Ver pdf del BCD to_bin](assets/bin_to_bcd.pdf)
+Módulo encargado para pasar el número de binario a BCD. [Ver pdf del bin_to_BCD](assets/bin_to_bcd.pdf)
 
 ![BCD sumador](assets/bin_to_bcd.jpeg)
 
-Módulo encargado de realizar la multiplicación. [Ver pdf del BCD to_bin](assets/booth_multiplier.pdf)
+Módulo encargado de realizar la multiplicación. [Ver pdf de la FSM_BOOTH](assets/booth_multiplier.pdf)
 
 ![BCD sumador](assets/mult.jpeg)
 
