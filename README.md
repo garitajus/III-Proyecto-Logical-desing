@@ -1,4 +1,4 @@
-# Tercer proyecto, diseño lógico, Multiplicadora con signo, elaborado por: Abner López Méndez y Justin Garita Serrano 
+# Tercer proyecto, diseño lógico, Algoritmo de Booth- Multiplicador con signo, elaborado por: Abner López Méndez y Justin Garita Serrano 
 
 ## 1. Funcionamiento general del circuito y explicación de cada modulo:
 - **Introducción**: El proyecto consiste en el diseño e implementación de una calculadora decimal en VHDL específicamente en SystemVerilog, desarrollada para una FPGA (la Tang Nano 9K). El sistema permite al usuario ingresar dos números decimales de tres dígitos mediante un teclado matricial hexadecimal 4x4, realizar su suma en formato BCD y visualizar tanto los números ingresados como el resultado de la operación en un display de 7 segmentos de 4 dígitos.
