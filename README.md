@@ -450,7 +450,15 @@ Módulo de los 7 segementos. [Ver pdf del Hex to 7seg](assets/hex_to_7seg.pdf)
 
 ![Hex to seg](assets/hex_to_seg.png)
 
-Moódulo encargado para la suma. [Ver pdf del BCD sumador](assets/bcd_sumador.pdf)
+Módulo encargado para pasar el número de BCD a binario. [Ver pdf del BCD to_bin](assets/bcd_to_bin.pdf)
+
+![BCD sumador](assets/bcd_sumador.png)
+
+Módulo encargado para pasar el número de binario a BCD. [Ver pdf del BCD to_bin](assets/bin_to_bcd.pdf)
+
+![BCD sumador](assets/bcd_sumador.png)
+
+Módulo encargado de realizar la suma. [Ver pdf del BCD to_bin](assets/booth_multiplier.pdf)
 
 ![BCD sumador](assets/bcd_sumador.png)
 
@@ -467,12 +475,15 @@ Esta FSM controla el escaneo del teclado matricial 4x4.
 ![FSM_scanner](assets/FSM_scanner.png)
 
 #### Máquina de estado del top
-Según el estado actual, decides si registrar un número, hacer la suma, mostrar el resultado o reiniciar.
+Según el estado actual, decides si registrar un número, hacer la multiplicación, mostrar el resultado o reiniciar.
 ![FSM_top](assets/FSM_top.png)
+
+#### Máquina de estado para la multiplicación
+Se realiza una multiplicación de dos números con signo usando el algoritmo de Booth controlado por una FSM secuencial.
+![FSM_top](assets/FSM_mult.png)
 
 ## 6. Ejemplo y análisis de una simulación funcional del sistema completo, desde el estímulo de entrada hasta el manejo de los 7 segmentos.
 
-Texto aquí
 
 ![prueba de referencia](assets/GTKwave.jpg)
 
