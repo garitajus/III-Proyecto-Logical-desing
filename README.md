@@ -440,7 +440,7 @@ Anti reobte. [Ver pdf del Debounce](assets/debounce.pdf)
 
 Escáner del teclado. [Ver pdf del keypad_scanner](assets/key_scanner.pdf)
 
-![Keypad Scanner](assets/keypad_scanner.png)
+![Keypad Scanner](assets/keypad_scanner.JPEG)
 
 Multiplexación para los 7 segmentos. [Ver pdf del Display Mux](assets/display_mux.pdf)
 
@@ -452,21 +452,21 @@ Módulo de los 7 segementos. [Ver pdf del Hex to 7seg](assets/hex_to_7seg.pdf)
 
 Módulo encargado para pasar el número de BCD a binario. [Ver pdf del BCD to_bin](assets/bcd_to_bin.pdf)
 
-![BCD sumador](assets/bcd_sumador.png)
+![BCD sumador](assets/bcd_to_bin.JPEG)
 
 Módulo encargado para pasar el número de binario a BCD. [Ver pdf del BCD to_bin](assets/bin_to_bcd.pdf)
 
-![BCD sumador](assets/bcd_sumador.png)
+![BCD sumador](assets/bin_to_bcd.JPEG)
 
-Módulo encargado de realizar la suma. [Ver pdf del BCD to_bin](assets/booth_multiplier.pdf)
+Módulo encargado de realizar la multiplicación. [Ver pdf del BCD to_bin](assets/booth_multiplier.pdf)
 
-![BCD sumador](assets/bcd_sumador.png)
+![BCD sumador](mult.JPEG)
 
 Módulo Top. [Ver pdf del Top](assets/top.pdf)
 
 Este módulo al ser tan grande no se pudo redimensionar
 
-![Módulo top](assets/top.png)
+![Módulo top](assets/top.JPEG)
 
 ## 5. Diagramas de estado de las FSM diseñadas, según descritos en la sección anterior.
 
