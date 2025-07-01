@@ -436,11 +436,11 @@ Este módulo principal integra todos los componentes del sistema (teclado, sumad
 
 Anti reobte. [Ver pdf del Debounce](assets/debounce.pdf)
 
-![Debounce](assets/debounce.png) 
+![Debounce](assets/debounce.jpeg) 
 
 Escáner del teclado. [Ver pdf del keypad_scanner](assets/key_scanner.pdf)
 
-![Keypad Scanner](assets/keypad_scanner.JPEG)
+![Keypad Scanner](assets/keypad_scanner.jpeg)
 
 Multiplexación para los 7 segmentos. [Ver pdf del Display Mux](assets/display_mux.pdf)
 
