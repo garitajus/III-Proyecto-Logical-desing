@@ -720,7 +720,7 @@ Verificando suma: 789 + 123 = 912
 Simulaci├│n completada
 ../sim/tb_top.sv:90: $finish called at 4600000 (1ps)
 ```
-El módulo top implementa un sistema de captura y suma de dos números decimales de tres dígitos ingresados desde un teclado matricial 4x4. Utiliza una máquina de estados finitos (FSM) con tres estados: ingreso del primer número (A), ingreso del segundo número (B) y visualización del resultado de la suma. A medida que se presionan teclas numéricas, los dígitos se registran desplazándolos hacia la izquierda, y al presionar la tecla # (código F) se cambia de estado. Una vez capturados ambos números, se realiza la suma en formato BCD y se muestra el resultado en un display de 7 segmentos multiplexado. Todo el sistema se sincroniza con un reloj de 27 MHz y permite reiniciar la operación mediante la tecla * (código E). No logramos que se puedan visualizar todas las señales en el GTKwave pero en consola es funcional y en la implementación practica también. Hacer testbench de 7 segmentos y resultados de sumas para el GTKwave tiene su grado de complejidad 
+El módulo top implementa un sistema de captura y multiplicación de dos números decimales de un dígito ingresados desde un teclado matricial 4x4. Utiliza una máquina de estados finitos (FSM) con tres estados: ingreso del primer número (A), ingreso del segundo número (B) y visualización del resultado de la multiplicación. A medida que se presionan teclas numéricas, los dígitos se registran desplazándolos hacia la izquierda, y al presionar la tecla # (código F) se cambia de estado. Una vez capturados ambos números, se realiza la multiplicación en formato binario en complemento a 2 y se muestra el resultado en un display de 7 segmentos multiplexado. Todo el sistema se sincroniza con un reloj de 27 MHz y permite reiniciar la operación mediante la tecla * (código E). En esta ocación no logramos diseñar un testbench funcional, sin embargo, todos los módulos fueron testeados uno a uno, asegurando su correcto funcionamiento 
 
 ## 7. Análisis de consumo de recursos en la FPGA (LUTs, FFs, etc.) y del consumo de potencia que reporta las herramientas.
 
@@ -789,11 +789,11 @@ Info: 	                rPLL:     0/    2     0%
 ## 9. Análisis de principales problemas hallados durante el trabajo y de las soluciones aplicadas.
 Siguiente se enumeran los diversos problemas que se tuvieron a lo largo de la construcción de este proyecto y de igual forma cómo se solventaron.
 #### 1.  Anti rebote, corrección y funcionalidad.
-Xxx 
+Para el módulo de antirrebote se tuvo que realizar una corrección con respecto al deseño, ya que, el diseño anterior no era funcional al 100%, en esta ocasión se optó por un diseño más claro y directo igualmente haciendo uso de FFs y registros para poder estabilizar la onda y verificar que realmente se presionó una tecla.
 #### 2.  FSM para la multiplicación. 
-Xxx 
+La FSM que se implementó en el módulo top, fue una de las tareas más difíciles de completar ya que, en muchas ocaciones el sistema no respondía al teclado, o simplemente mostraba números al azar, sin embargo, por último pudimos realizar un correcto diseño de la FSM funcional.
 #### 3.  Módulo para pasar un número de binario a formato BCD.
-Xxx
+Este módulo presentó problemas, ya que, en todo¿as la implementaciones secuenciales que realizamos a la hora de dar el resultado de la multiplicacón mostraba resultados en hexadecimal por alguna razón, por último se optó por realizar el diseño de manera combinacional por medio de un LUT, donde se hace a ¨pie¨ pero en este caso fue la única forma en la que el diseño fue funcional.
 
 ## 10. Referencias
 [0] Behzad R. *Fundamentals of Microelectronics*. Wiley, 2da edición, 2013.
