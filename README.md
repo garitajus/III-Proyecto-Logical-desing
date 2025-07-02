@@ -139,51 +139,62 @@ Cada fila pasa por un módulo debounce independiente para eliminar ruido mecáni
 - **Módulo de eliminación de rebote**: Encabezado del módulo
 ```SystemVerilog
 module debounce (
-    input  logic clk,          
-    input  logic rst,        
-    input  logic key,     
+    input  logic clk,
+    input  logic rst,          
+    input  logic key,            
     output logic key_pressed     
 );
 ```
 Este módulo tiene como entradas el reset, el reloj del sistema, la tecla con la señal inestable y como salida la palabra ya estable lista para utilizar en los demás modulos.
 ```SystemVerilog
-    logic [16:0]  count;    
-    logic estable;           
-    logic ff_1, ff_2, ff_3, ff_4;
-    
-    always_ff @(posedge clk or negedge rst) begin
-        if (!rst) begin
-            ff_1 <= 1'b0; 
-            ff_2 <= 1'b0;
-            ff_4 <= 1'b0;
-        end else begin
-            ff_1 <= key;
-            ff_2 <= ff_1;
-            ff_4 <= ff_2;
-        end
+   parameter N = 6;
+    parameter integer COUNT = 15_000_000; 
+
+    logic [N-1:0] reg_sat, reg_next;
+    logic SAMPLE1, SAMPLE2;
+    logic reg_reset = (SAMPLE1 ^ SAMPLE2);
+    logic reg_add   = ~reg_sat[N-1];
+
+    logic [31:0] counter;
+    logic active;
+
+    always_comb begin
+        case ({reg_reset, reg_add})
+            2'b00: reg_next = reg_sat;
+            2'b01: reg_next = reg_sat + 1;
+            default: reg_next = {N{1'b0}};
+        endcase
     end
 
-    assign estable = ff_1 & ff_2 & ff_4;
-
     always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
-             count <= '0; 
-             ff_3 <= 1'b0;
+            SAMPLE1        <= 0;
+            SAMPLE2        <= 0;
+            reg_sat       <= 0;
+            key_pressed <= 0;
+            active      <= 0;
+            counter     <= 0;
         end else begin
-            if (estable) begin           
-                if ( count == 3'b100) begin        
-                     count <= '0;
-                    ff_3 <= 1'b1; 
+            SAMPLE1  <= key;
+            SAMPLE2  <= SAMPLE1;
+            reg_sat <= reg_next;
+
+            if (reg_sat[N-1] && SAMPLE2 && !active) begin
+                key_pressed <= 1;
+                active      <= 1;
+                counter     <= 0;
+            end else if (active) begin
+                if (counter < COUNT) begin
+                    counter <= counter + 1;
                 end else begin
-                     count <=  count + 1'b1;
-                    ff_3 <= 1'b0;
+                    key_pressed <= 0;
+                    active      <= 0;
                 end
-            end else begin
-                 count <= '0;
-                ff_3 <= 1'b0;
             end
         end
     end
+
+endmodule
 ```
 Este módulo elimina los rebotes (señal ruidosa) de botones mecánicos mediante un filtrado digital. Sincroniza la señal de entrada (key) con el reloj (clk) usando flip-flops, luego valida que el estado se mantenga estable durante 4 ciclos de reloj antes de registrar la pulsación en key_pressed. Incluye un reset (rst) para inicialización y es ideal para sistemas con relojes rápidos (como 27 MHz), garantizando que solo se detecten pulsaciones reales y evitando falsos triggers por vibraciones mecánicas.
 
@@ -258,179 +269,372 @@ endmodule
 ```
 Este módulo convierte un valor hexadecimal de 4 bits (0-F) en su correspondiente patrón de encendido para un display de 7 segmentos, donde cada bit de la salida seg controla un segmento específico. Utiliza una lógica combinacional mediante una sentencia case que mapea cada valor hexadecimal a su configuración de segmentos correspondiente, activando los segmentos necesarios para formar el dígito deseado (el display es de ánodo común ). Por ejemplo, el valor 4'h0 (0 en hexadecimal) se traduce a 7'b1000000, lo que enciende todos los segmentos excepto el 'g', formando el número 0 en el display. El módulo incluye un caso default que apaga todos los segmentos si el valor de entrada no está en el rango esperado, asegurando un comportamiento predecible incluso con entradas no definidas.
 
-- **Módulo de suma**: Encabezado del módulo
+- **Módulo de multiplicación**: Encabezado del módulo
 ```SystemVerilog
-module bcd_sumador (
-    input [11:0] bcd_1,  
-    input [11:0] bcd_2,
-    output [15:0] resultado_bcd  
+module booth_multiplier #(parameter N = 5)(
+    input logic clk,
+    input logic rst, 
+    input logic start,
+    input logic signed [N-1:0] multiplicand,
+    input logic signed [N-1:0] multiplier,
+    output logic signed [2*N-1:0] product,
+    output logic done
 ); 
 ```
-Este módulo tiene como entradas los números de 3 digitos y como salida la suma correspondiente de ambos números.
+Este módulo tiene como entradas el multiplicando y el multiplicador 
 
 ```SystemVerilog
-    logic [3:0] unidades_1 = bcd_1[3:0];
-    logic [3:0] decenas_1 = bcd_1[7:4];
-    logic [3:0] centenas_1 = bcd_1[11:8];
+     typedef enum logic [1:0] { IDLE, CALC, SHIFT, FINISH } state_t;
+    state_t state;
 
-    logic [3:0] unidades_2 = bcd_2[3:0];
-    logic [3:0] decenas_2 = bcd_2[7:4];
-    logic [3:0] centenas_2 = bcd_2[11:8]; 
-    
-    logic [4:0] suma_unidades = unidades_1 + unidades_2;
-    logic [3:0] unidades_final = (suma_unidades > 9) ? suma_unidades - 10 : suma_unidades;
-    logic acarreo_unidades = (suma_unidades > 9);
+    logic signed [N:0]   AC;  
+    logic signed [N-1:0] QR, BR; 
+    logic                Q_1; 
+    logic [$clog2(N)-1:0] SC; 
 
-    logic [4:0] suma_decenas = decenas_1 + decenas_2 + acarreo_unidades;
-    logic [3:0] decenas_final = (suma_decenas > 9) ? suma_decenas - 10 : suma_decenas;
-    logic acarreo_decenas = (suma_decenas > 9);
-
-    logic [4:0] suma_centenas = centenas_1 + centenas_2 + acarreo_decenas;
-    logic [3:0] centenas_final = (suma_centenas > 9) ? suma_centenas - 10 : suma_centenas;
-    logic acarreo_centenas = (suma_centenas > 9);
-
-    assign resultado_bcd = {acarreo_centenas, centenas_final, decenas_final, unidades_final};
-endmodule 
-```
- Este sumador BCD realiza la suma de dos números de 3 dígitos BCD (cada uno representado en 12 bits, organizados en grupos de 4 bits para centenas, decenas y unidades) y produce un resultado de 4 dígitos BCD (16 bits, incluyendo posibles miles). El módulo opera en tres fases principales: primero suma las unidades de ambos números, ajustando el resultado si excede 9 (resta 10 y genera un acarreo); luego suma las decenas junto con el acarreo anterior, realizando el mismo ajuste; finalmente repite el proceso para las centenas. El acarreo final de las centenas se convierte en el dígito de miles, permitiendo representar resultados hasta 1998. La salida (resultado_bcd) organiza los cuatro dígitos BCD (miles, centenas, decenas y unidades) en un bus de 16 bits, manteniendo la precisión decimal sin necesidad de conversiones adicionales.
-
-- **Modulo principal**: Encabezado del módulo
-```SystemVerilog
-module top(
-    input logic clk,         // Reloj de 27 MHz
-    input logic rst,         // Reset activo en bajo
-    output logic [3:0] an,   // Ánodos del display (asumiendo 4 dígitos para el resultado)
-    output logic [6:0] seg,  // Segmentos del display
-    output logic [3:0] columnas, // Columnas del teclado
-    input logic [3:0] filas    // Filas del teclado
-);
-```
-Este módulo tiene como entrada la señal de reloj, el reset, y las filas. Como salidas tiene la informacion para cada uno de los 4 ánodos, para los 7 segmentos, para las 4 columnas.
-
-```SystemVerilog
-    logic [3:0] key;
-    logic key_pressed;
-    logic key_pressed_prev; 
-    logic key_strobe;       
-
-    typedef enum logic [1:0] {
-        STATE_INPUT_A,      
-        STATE_INPUT_B,      
-        STATE_SHOW_SUM     
-    } operation_state_t;
-
-    operation_state_t current_state, next_state;
-
-    logic [3:0] A0, A1, A2; 
-    logic [3:0] B0, B1, B2; 
-    logic [15:0] sum_result; 
-    logic [15:0] display_data;
-
-    keypad_scanner scanner(
-        .clk(clk),
-        .col(columnas),
-        .row(filas),
-        .key(key),         
-        .key_pressed(key_pressed) 
-    );
-
-    always_ff @(posedge clk or negedge rst) begin
-        if (!rst) begin
-            key_pressed_prev <= 1'b0;
-            key_strobe <= 1'b0;
-        end else begin
-            key_pressed_prev <= key_pressed;
-            // key_strobe es alto solo si key_pressed es alto AHORA y era bajo ANTES
-            key_strobe <= key_pressed && !key_pressed_prev;
-        end
-    end
-
-    always_ff @(posedge clk or negedge rst) begin
-        if (!rst) begin
-            current_state <= STATE_INPUT_A; 
-            A0 <= 4'd0; A1 <= 4'd0; A2 <= 4'd0;
-            B0 <= 4'd0; B1 <= 4'd0; B2 <= 4'd0;
-        end else begin
-            current_state <= next_state; 
-
-            if (key_strobe) begin
-                case (key)
-                    4'hE: begin
-                        A0 <= 4'd0; A1 <= 4'd0; A2 <= 4'd0;
-                        B0 <= 4'd0; B1 <= 4'd0; B2 <= 4'd0;
-                    end
-                    4'hF: begin
-                    end
-                    default: begin
-                        if (current_state == STATE_INPUT_A) begin
-                            A2 <= A1;
-                            A1 <= A0;
-                            A0 <= key; 
-                        end else if (current_state == STATE_INPUT_B) begin
-                            B2 <= B1;
-                            B1 <= B0;
-                            B0 <= key; 
-                        end
-                    end
-                endcase
-            end
-        end
-    end
-    always_comb begin
-        next_state = current_state; 
-
+    always_ff @(posedge clk or negedge rst) begin 
         if (!rst) begin 
-           next_state = STATE_INPUT_A;
-        end else if (key_strobe) begin 
-            case (key)
-                4'hE: begin 
-                    next_state = STATE_INPUT_A;
-                end
-                4'hF: begin
-                    case (current_state)
-                        STATE_INPUT_A: next_state = STATE_INPUT_B; 
-                        STATE_INPUT_B: next_state = STATE_SHOW_SUM; 
-                        STATE_SHOW_SUM: next_state = STATE_INPUT_A; 
-                        default: next_state = STATE_INPUT_A; 
-                    endcase
-                end
-                default: begin
-                  
-                    if (current_state == STATE_SHOW_SUM) begin
-                         next_state = STATE_INPUT_A;
-                    end else begin
-                         next_state = current_state; 
+            state   <= IDLE;
+            done    <= 1'b0;
+            product <= 0;
+            AC      <= 0;
+            QR      <= 0;
+            Q_1     <= 1'b0;
+            SC      <= 0;
+        end else begin
+            case (state)
+                IDLE: begin
+                    done <= 1'b0;
+                    if (start) begin
+                        AC    <= 0;
+                        QR    <= multiplier;
+                        BR    <= multiplicand;
+                        Q_1   <= 1'b0;
+                        SC    <= N;
+                        state <= CALC;
                     end
+                end
+
+                CALC: begin
+                    case ({QR[0], Q_1})
+                        2'b01: AC <= AC + BR;
+                        2'b10: AC <= AC - BR;
+                        default: ;
+                    endcase
+                    state <= SHIFT;
+                end
+
+                SHIFT: begin
+                    
+                    Q_1      <= QR[0];
+                    QR       <= {AC[0], QR[N-1:1]};
+                    AC       <= {AC[N], AC[N:1]}; 
+                    
+                    SC <= SC - 1;
+                    if (SC == 1) begin 
+                        state <= FINISH;
+                    end else begin
+                        state <= CALC;
+                    end
+                end
+
+                FINISH: begin
+                 
+                    product <= {AC[N-1:0], QR};
+                    done  <= 1'b1;
+                    state <= IDLE;
                 end
             endcase
         end
     end
-    logic [11:0] bcd_A = {A2, A1, A0};
-    logic [11:0] bcd_B = {B2, B1, B0};
+```
+Este modulo implementa el algoritmo de Booth para realizar una multiplicación de números con signo en complemento a 2 de 5 bits. Utilizando una FSM (IDLE, CALC, SHIFT, FINISH), controla el proceso de multiplicación, en cada ciclo, evalúa los bits del multiplicador (según la regla de Booth) para sumar o restar el multiplicando al acumulador (AC), realiza desplazamientos aritméticos y repite el proceso hasta completar N iteraciones. Finalmente, concatena los registros AC y QR para formar el producto de 2*N bits y señala que la operación fue completada con la señal DONE.
 
-    bcd_sumador sumador (
-        .bcd_1(bcd_A),
-        .bcd_2(bcd_B),
-        .resultado_bcd(sum_result) 
-    );
+- **Modulo convertidor de BCD a Binario**: Encabezado del módulo
+```SystemVerilog
+module bcd_to_bin (
+    input  logic [3:0] units_bcd,        
+    input  logic       sign,              
+    output logic signed [4:0] bin_out 
+);
+```
+Este módulo tiene como entrada el numero en formato BCD y tiene como salida ese número BCD convertido a Binario
+```SystemVerilog
+    logic [4:0] unsigned_bin;
+
     always_comb begin
-        case (current_state)
-            STATE_INPUT_A:  display_data = {4'd0, A2, A1, A0}; 
-            STATE_INPUT_B:  display_data = {4'd0, B2, B1, B0};
-            STATE_SHOW_SUM: display_data = sum_result;        
-            default:        display_data = 16'hFFFF;           
-        endcase
+        unsigned_bin = {1'b0, units_bcd};
+        if (sign)
+            bin_out = -$signed(unsigned_bin);
+        else
+            bin_out = $signed(unsigned_bin);
     end
-    display_mux display (
-        .clk(clk),
-        .data(display_data), 
-        .anodes(an),         
-        .seg(seg)          
-    );
-endmodule
 
 ```
-Este módulo principal integra todos los componentes del sistema (teclado, sumador BCD y display) para crear una calculadora básica de 3 dígitos. Opera con una máquina de estados de 3 fases: STATE_INPUT_A (captura el primer número), STATE_INPUT_B (captura el segundo número) y STATE_SHOW_SUM (muestra el resultado). El sistema utiliza un teclado matricial 4x4 (controlado por keypad_scanner) donde las teclas numéricas (0-9) ingresan dígitos (almacenados en registros de desplazamiento para A y B), '*' reinicia la calculadora, y '#' avanza entre estados. Cuando se completa la entrada, el sumador BCD (bcd_sumador) procesa los números y genera un resultado de 4 dígitos (incluyendo acarreo). El multiplexor de display (display_mux) muestra dinámicamente el número actual (A, B o resultado) en un display de 7 segmentos, alternando rápidamente entre dígitos. Un detector de flancos en key_pressed asegura que cada tecla se registre una sola vez, mientras que la lógica combinacional controla las transiciones de estado y la selección de datos para visualización. 
+Este módulo convierte un dígito BCD del 0 al 9 a su representación binaria en comolemento a 2. Si la entrada sing es 1, el módulo calcula el valor negativo del número BCD, si es 0, mantiene su valor original. La salida es un número binario de 5 bits con signo, capaz de representar números del -9 al 9. La conversión se realiza por medio de la extensión de bits y aplicación condicional del signo usando complemento a 2.
+
+- **Modulo convertidor de Binario a BCD**: Encabezado del módulo
+ ```SystemVerilog
+module bin_to_bcd (
+    input  logic [6:0] bin_ent,     
+    output logic [11:0] bcd_out     
+);
+```
+La entrada de este modulo es un número binario y su salida es un número en formato BCD
+```SystemVerilog
+    always_comb begin
+        case (bin_ent)
+            7'd0:  bcd_out = 12'h000;
+            7'd1:  bcd_out = 12'h001;
+            7'd2:  bcd_out = 12'h002;
+            7'd3:  bcd_out = 12'h003;
+            7'd4:  bcd_out = 12'h004;
+            7'd5:  bcd_out = 12'h005;
+            7'd6:  bcd_out = 12'h006;
+            7'd7:  bcd_out = 12'h007;
+            7'd8:  bcd_out = 12'h008;
+            7'd9:  bcd_out = 12'h009;
+            7'd10: bcd_out = 12'h010;
+            7'd11: bcd_out = 12'h011;
+            7'd12: bcd_out = 12'h012;
+            7'd13: bcd_out = 12'h013;
+            7'd14: bcd_out = 12'h014;
+            7'd15: bcd_out = 12'h015;
+            7'd16: bcd_out = 12'h016;
+            7'd17: bcd_out = 12'h017;
+            7'd18: bcd_out = 12'h018;
+            7'd19: bcd_out = 12'h019;
+            7'd20: bcd_out = 12'h020;
+            7'd21: bcd_out = 12'h021;
+            7'd22: bcd_out = 12'h022;
+            7'd23: bcd_out = 12'h023;
+            7'd24: bcd_out = 12'h024;
+            7'd25: bcd_out = 12'h025;
+            7'd26: bcd_out = 12'h026;
+            7'd27: bcd_out = 12'h027;
+            7'd28: bcd_out = 12'h028;
+            7'd29: bcd_out = 12'h029;
+            7'd30: bcd_out = 12'h030;
+            7'd31: bcd_out = 12'h031;
+            7'd32: bcd_out = 12'h032;
+            7'd33: bcd_out = 12'h033;
+            7'd34: bcd_out = 12'h034;
+            7'd35: bcd_out = 12'h035;
+            7'd36: bcd_out = 12'h036;
+            7'd37: bcd_out = 12'h037;
+            7'd38: bcd_out = 12'h038;
+            7'd39: bcd_out = 12'h039;
+            7'd40: bcd_out = 12'h040;
+            7'd41: bcd_out = 12'h041;
+            7'd42: bcd_out = 12'h042;
+            7'd43: bcd_out = 12'h043;
+            7'd44: bcd_out = 12'h044;
+            7'd45: bcd_out = 12'h045;
+            7'd46: bcd_out = 12'h046;
+            7'd47: bcd_out = 12'h047;
+            7'd48: bcd_out = 12'h048;
+            7'd49: bcd_out = 12'h049;
+            7'd50: bcd_out = 12'h050;
+            7'd51: bcd_out = 12'h051;
+            7'd52: bcd_out = 12'h052;
+            7'd53: bcd_out = 12'h053;
+            7'd54: bcd_out = 12'h054;
+            7'd55: bcd_out = 12'h055;
+            7'd56: bcd_out = 12'h056;
+            7'd57: bcd_out = 12'h057;
+            7'd58: bcd_out = 12'h058;
+            7'd59: bcd_out = 12'h059;
+            7'd60: bcd_out = 12'h060;
+            7'd61: bcd_out = 12'h061;
+            7'd62: bcd_out = 12'h062;
+            7'd63: bcd_out = 12'h063;
+            7'd64: bcd_out = 12'h064;
+            7'd65: bcd_out = 12'h065;
+            7'd66: bcd_out = 12'h066;
+            7'd67: bcd_out = 12'h067;
+            7'd68: bcd_out = 12'h068;
+            7'd69: bcd_out = 12'h069;
+            7'd70: bcd_out = 12'h070;
+            7'd71: bcd_out = 12'h071;
+            7'd72: bcd_out = 12'h072;
+            7'd73: bcd_out = 12'h073;
+            7'd74: bcd_out = 12'h074;
+            7'd75: bcd_out = 12'h075;
+            7'd76: bcd_out = 12'h076;
+            7'd77: bcd_out = 12'h077;
+            7'd78: bcd_out = 12'h078;
+            7'd79: bcd_out = 12'h079;
+            7'd80: bcd_out = 12'h080;
+            7'd81: bcd_out = 12'h081;
+            default: bcd_out = 12'hFFF; 
+        endcase
+    end
+
+```
+Este modulo se encarga de convertir un número binario de 7 bits (0 al 81) en su equivalente BCD de 12 bits, organizado en centenas, decenas y ub¿nidades. Utiliza la tabla de búsqueda (LUT) implementada con un case, que asigna diractamente cada valor binario de entrada a su representación BCD correspondiente. Si la entrada está fuera de ranfo válido devuelve los displays en 000. Es un diseño combinacional.
+
+- **Modulo Principal del diseño**: Encabezado del módulo
+```SystemVerilog
+module top(
+    input logic clk,        
+    input logic rst,        
+    output logic [3:0] an, 
+    output logic [6:0] seg, 
+    output logic [3:0] columnas, 
+    input  logic [3:0] filas     
+);
+```
+Este modulo tiene como entradas el clk y el rst. Como salidas tiene las salidas para cada ánodo, cada segmento, las columnas del teclado y una entrada de las filas del teclado.
+
+```SystemVerilog
+    logic [3:0] key;
+    logic key_pressed, key_prev, key_strobe;
+
+    keypad_scanner scanner (
+        .clk(clk),
+        .col(columnas),
+        .row(filas),
+        .key(key),
+        .key_pressed(key_pressed)
+    );
+
+    // Pulso de tecla única
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            key_prev   <= 1'b0;
+            key_strobe <= 1'b0;
+        end else begin
+            key_prev   <= key_pressed;
+            key_strobe <= key_pressed && !key_prev;
+        end
+    end
+
+    typedef enum logic [1:0] {
+        S_INPUT_A,
+        S_INPUT_B,
+        S_MUL_RESULT
+    } state_t;
+
+    state_t state, next_state;
+
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst)
+            state <= S_INPUT_A;
+        else
+            state <= next_state;
+    end
+
+    always_comb begin
+        next_state = state;
+        if (key_strobe && key == 4'hF) begin 
+            case (state)
+                S_INPUT_A:    next_state = S_INPUT_B;
+                S_INPUT_B:    next_state = S_MUL_RESULT;
+                S_MUL_RESULT: next_state = S_INPUT_A;
+            endcase
+        end
+    end
+
+    logic [3:0] A_bcd, B_bcd;
+    logic A_sign, B_sign;
+
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            A_bcd <= 4'd0; A_sign <= 1'b0;
+            B_bcd <= 4'd0; B_sign <= 1'b0;
+        end else if (key_strobe) begin
+            case (key)
+                4'hE: begin 
+                    A_bcd <= 4'd0; A_sign <= 1'b0;
+                    B_bcd <= 4'd0; B_sign <= 1'b0;
+                end
+                4'hA: begin 
+                    if (state == S_INPUT_A) A_sign <= 1'b1;
+                    else if (state == S_INPUT_B) B_sign <= 1'b1;
+                end
+                4'hB: begin 
+                    if (state == S_INPUT_A) A_sign <= 1'b0;
+                    else if (state == S_INPUT_B) B_sign <= 1'b0;
+                end
+                4'h0, 4'h1, 4'h2, 4'h3, 4'h4,
+                4'h5, 4'h6, 4'h7, 4'h8, 4'h9: begin
+                    if (state == S_INPUT_A) A_bcd <= key;
+                    else if (state == S_INPUT_B) B_bcd <= key;
+                end
+                default: ; 
+            endcase
+        end
+    end
+
+    logic signed [4:0] A_bin, B_bin;
+    bcd_to_bin convA (.units_bcd(A_bcd), .sign(A_sign), .bin_out(A_bin));
+    bcd_to_bin convB (.units_bcd(B_bcd), .sign(B_sign), .bin_out(B_bin));
+
+    logic start_mul, done_mul;
+    logic signed [9:0] result;
+
+    booth_multiplier #(.N(5)) mul (
+        .clk(clk),
+        .rst(rst),
+        .start(start_mul),
+        .multiplicand(A_bin),
+        .multiplier(B_bin),
+        .product(result),
+        .done(done_mul)
+    );
+
+    always_ff @(posedge clk or negedge rst) begin // cuando # inicia la multiplicación 
+        if (!rst)
+            start_mul <= 1'b0;
+        else
+            start_mul <= (key_strobe && key == 4'hF && state == S_INPUT_B);
+    end
+
+    logic [6:0] result_abs;
+    assign result_abs = (result < 0) ? -result : result;
+
+    logic [11:0] result_bcd;
+    bin_to_bcd bcd_converter (
+        .bin_ent(result_abs),
+        .bcd_out(result_bcd)
+    );
+
+    logic [3:0] signo;
+    assign signo = (result < 0) ? 4'hA : 4'hF; // A = '-', F = blanco
+
+    logic [15:0] display_data;
+    always_comb begin
+        case (state)
+            S_INPUT_A: begin
+                if (A_sign)
+                    display_data = {8'hBBB, 4'hA, A_bcd};  
+                else
+                    display_data = {8'hBBB, 4'hB, A_bcd};       
+            end
+            S_INPUT_B: begin
+                if (B_sign)
+                   display_data = {8'hBBB, 4'hA, B_bcd};  
+                else
+                    display_data = {8'hBBB, 4'hB, B_bcd};       
+            end
+           S_MUL_RESULT: begin
+             display_data = {4'hF, signo, result_bcd[7:0]};
+            end
+
+            default: display_data = 16'hFFFF;
+        endcase
+    end
+
+
+    display_mux display (
+        .clk(clk),
+        .data(display_data),
+        .anodes(an),
+        .seg(seg)
+    );
+endmodule
+```
+El módulo top integra una calculadora basada en el algoritmo de Booth que permite ingresar dos números con signo (0-9) mediante un teclado matricial 4×4, convertirlos de BCD a binario, multiplicarlos usando el módulo booth_multiplier, y mostrar el resultado en un display de 7 segmentos. El sistema, controlado por una FSM (Máquina de Estados Finitos), maneja tres estados: entrada del primer operando (S_INPUT_A), entrada del segundo operando (S_INPUT_B) y visualización del resultado (S_MUL_RESULT). Los datos se procesan en tiempo real, convirtiendo el resultado binario a BCD para su visualización, incluyendo el signo negativo si es necesario. El diseño utiliza multiplexación de displays para mostrar dígitos individuales y señales de control para teclas especiales (como # para avanzar, * para resetear, A para colocar el negativo).
 
 ## 4. Diagramas de bloques de cada subsistema y su funcionamiento fundamental.
 
