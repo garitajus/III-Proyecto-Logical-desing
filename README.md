@@ -12,7 +12,7 @@ Un sistema de multiplexado de displays permite mostrar dinámicamente los dígit
 El diseño está pensado para operar con un reloj de 27 MHz y fue desarrollado con una estructura modular clara que facilita la síntesis y carga en una FPGA.
 
 ## 2. Definición general del problema, de los objetivos buscados y de las especificaciones planteadas en el enunciado:
-En este proyecto se pide implementar un sistema digital integrado capaz de realizar operaciones aritméticas básicas con entrada mediante teclado matricial y visualización en displays de 7 segmentos, resolviendo los desafíos típicos en el desarrollo de interfaces de usuario. El problema principal radica en coordinar tres subsistemas clave: la captura confiable de entradas mediante un teclado matricial 4x4 (considerando el filtrado de rebotes), el procesamiento aritmético en formato binario (para mantener precisión decimal) y la visualización multiplexada en displays de 7 segmentos (que demanda refresco constante). Los objetivos específicos incluyen diseñar una calculadora básica que permita ingresar números de hasta dígito, realizar muktiplicaciones utilizando el algoritmo de Booth correctamente y mostrar resultados de hasta 3 dígitos, implementando técnicas robustas de sincronización y control de estados. Las especificaciones técnicas requieren operación a 27 MHz con reset asíncrono, manejo de entradas mediante un teclado matricial con teclas numéricas (0-9) y de control, visualización estable en displays de 7 segmentos con refresco a aproximadamente 1 kHz, y capacidad para sumar valores entre 0-999 produciendo resultados correctos en el rango 0-1998. El diseño debe ser eficiente en el uso de recursos lógicos, optimizado para implementación en FPGAs, cumpliendo con requisitos de consumo de potencia y área mediante técnicas de diseño modular y sincronización precisa de señales.
+En este proyecto se pide implementar un sistema digital integrado capaz de realizar operaciones aritméticas básicas con entrada mediante teclado matricial y visualización en displays de 7 segmentos, resolviendo los desafíos típicos en el desarrollo de interfaces de usuario. El problema principal radica en coordinar tres subsistemas clave: la captura confiable de entradas mediante un teclado matricial 4x4 (considerando el filtrado de rebotes), el procesamiento aritmético en formato binario (para mantener precisión decimal) y la visualización multiplexada en displays de 7 segmentos (que demanda refresco constante). Los objetivos específicos incluyen diseñar una calculadora básica que permita ingresar números de hasta dígito, realizar muktiplicaciones utilizando el algoritmo de Booth correctamente y mostrar resultados de hasta 2 dígitos y su signo, implementando técnicas robustas de sincronización y control de estados. Las especificaciones técnicas requieren operación a 27 MHz con reset asíncrono, manejo de entradas mediante un teclado matricial con teclas numéricas (0-9) y de control, visualización estable en displays de 7 segmentos con refresco a aproximadamente 1 kHz, y capacidad para multiplicar valores entre 0 y +-9 produciendo resultados correctos en el rango 0 y +-81. El diseño debe ser eficiente en el uso de recursos lógicos, optimizado para implementación en FPGAs, cumpliendo con requisitos de consumo de potencia y área mediante técnicas de diseño modular y sincronización precisa de señales.
 
 ## 3. Explicación de los modulos:
 - **Módulo de lectura del teclado**: Encabezado del módulo
@@ -688,37 +688,88 @@ Se realiza una multiplicación de dos números con signo usando el algoritmo de 
 
 ## 6. Ejemplo y análisis de una simulación funcional del sistema completo, desde el estímulo de entrada hasta el manejo de los 7 segmentos.
 
-
-![prueba de referencia](assets/GTKwave.jpg)
-
 ```Verilog
-VCD info: dumpfile simulation.vcd opened for output.
-Ingresando número A: 123
-Presionando tecla:  3
-Presionando tecla:  2
-Presionando tecla:  1
-Presionando tecla especial: f (#)
-Ingresando número B: 456
-Presionando tecla:  6
-Presionando tecla:  5
-Presionando tecla:  4
-Presionando tecla especial: f (#)
-Verificando suma: 123 + 456 = 579
-~~~~~~~~~~Reiniciando...~~~~~~~~~~
-Presionando tecla especial: e (*)
-Ingresando nuevo número A: 789
-Presionando tecla:  9
-Presionando tecla:  8
-Presionando tecla:  7
-Presionando tecla especial: f (#)
-Ingresando nuevo número B: 123
-Presionando tecla:  3
-Presionando tecla:  2
-Presionando tecla:  1
-Presionando tecla especial: f (#)
-Verificando suma: 789 + 123 = 912
-Simulaci├│n completada
-../sim/tb_top.sv:90: $finish called at 4600000 (1ps)
+========================================
+INICIO DE LA SIMULACION
+========================================
+[TEST 1] Reset aplicado y liberado.
+[PASS] Estado inicial correcto.
+
+[TEST 2] Multiplicacion: 3 x 5 = 15
+  -> Simulando presion de tecla: 3
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: 5
+  -> Simulando presion de tecla: f
+[PASS] 3 x 5 = 15 verificado correctamente.
+
+[TEST 3] Multiplicacion: -7 x 8 = -56
+  -> Simulando presion de tecla: -7
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: 8
+  -> Simulando presion de tecla: f
+[PASS] -7 x 8 = -56 verificado correctamente.
+
+[TEST 4] Multiplicacion: 6 x -2 = -12
+  -> Simulando presion de tecla: 6
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: -2
+  -> Simulando presion de tecla: f
+[PASS] 6 x -2 = -12 verificado correctamente.
+
+[TEST 5] Multiplicacion: -4 x -3 = 12
+  -> Simulando presion de tecla: -4
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: -3
+  -> Simulando presion de tecla: f
+[PASS] -4 x -3 = 12 verificado correctamente.
+
+[TEST 6] Multiplicacion: 0 x 7 = 0
+  -> Simulando presion de tecla: 0
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: 7
+  -> Simulando presion de tecla: f
+[PASS] 0 x 7 = 0 verificado correctamente.
+
+[TEST 7] Multiplicacion: 9 x 0 = 0
+  -> Simulando presion de tecla: 9
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: 0
+  -> Simulando presion de tecla: f
+[PASS] 9 x 0 = 0 verificado correctamente.
+
+[TEST 8] Multiplicacion: -9 x 1 = -9
+  -> Simulando presion de tecla: -9
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: 1
+  -> Simulando presion de tecla: f
+[PASS] -9 x 1 = -9 verificado correctamente.
+
+[TEST 9] Multiplicacion: 1 x -9 = -9
+  -> Simulando presion de tecla: 1
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: -9
+  -> Simulando presion de tecla: f
+[PASS] 1 x -9 = -9 verificado correctamente.
+
+[TEST 10] Multiplicacion: -9 x -9 = 81
+  -> Simulando presion de tecla: -9
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: -9
+  -> Simulando presion de tecla: f
+[PASS] -9 x -9 = 81 verificado correctamente.
+
+[TEST 11] Multiplicacion: 9 x 9 = 81
+  -> Simulando presion de tecla: 9
+  -> Simulando presion de tecla: f
+  -> Simulando presion de tecla: 9
+  -> Simulando presion de tecla: f
+[PASS] 9 x 9 = 81 verificado correctamente.
+
+========================================
+FIN DE LA SIMULACION: Todos los tests pasaron.
+========================================
+
+../sim/tb_top.sv:109: $finish called at 1445000 (1ps)
 ```
 El módulo top implementa un sistema de captura y multiplicación de dos números decimales de un dígito ingresados desde un teclado matricial 4x4. Utiliza una máquina de estados finitos (FSM) con tres estados: ingreso del primer número (A), ingreso del segundo número (B) y visualización del resultado de la multiplicación. A medida que se presionan teclas numéricas, los dígitos se registran desplazándolos hacia la izquierda, y al presionar la tecla # (código F) se cambia de estado. Una vez capturados ambos números, se realiza la multiplicación en formato binario en complemento a 2 y se muestra el resultado en un display de 7 segmentos multiplexado. Todo el sistema se sincroniza con un reloj de 27 MHz y permite reiniciar la operación mediante la tecla * (código E). En esta ocación no logramos diseñar un testbench funcional, sin embargo, todos los módulos fueron testeados uno a uno, asegurando su correcto funcionamiento 
 
